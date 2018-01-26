@@ -11,9 +11,7 @@
       for (i = 1; i < document.form1.pole1.value.length - 1; ++i) {
         document.form1.pole2.value = document.form1.pole2.value.replace(/^\s*[\r\n]/gm, "")
         document.form1.pole2.value = document.form1.pole2.value.split("\n").filter(function (x, n, s) { return s.indexOf(x) == n }).join(document.form1.pole3.value).replace(/^|\s+/g, "")
-          < !--document.form1.pole2.value = document.form1.pole2.value.split("\n").filter(function (x, n, s) { return s.indexOf(x) == n }).join("|")-- >
-   < !--document.form1.pole2.value = document.form1.pole2.value.replace("/^|/", "")-- >
-   }
+      }
     }
   </script>
 

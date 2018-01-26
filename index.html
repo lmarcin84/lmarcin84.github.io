@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+
+  <script>
+    function przepisz() {
+      if (!document.form1.pole2.value) document.form1.pole2.value = document.form1.pole1.value
+      else document.form1.pole2.value = ''
+
+      for (i = 1; i < document.form1.pole1.value.length - 1; ++i) {
+        document.form1.pole2.value = document.form1.pole2.value.replace(/^\s*[\r\n]/gm, "")
+        document.form1.pole2.value = document.form1.pole2.value.split("\n").filter(function (x, n, s) { return s.indexOf(x) == n }).join(document.form1.pole3.value).replace(/^|\s+/g, "")
+          < !--document.form1.pole2.value = document.form1.pole2.value.split("\n").filter(function (x, n, s) { return s.indexOf(x) == n }).join("|")-- >
+   < !--document.form1.pole2.value = document.form1.pole2.value.replace("/^|/", "")-- >
+   }
+    }
+  </script>
+
+  <form name="form1">
+    <textarea name="pole1" placeholder="Tutaj wklej tekst" rows="10" cols="60"></textarea>
+    </br>
+    <textarea name="pole2" placeholder="" rows="10" cols="60"></textarea>
+    </br>
+    Separator:
+    <input type="text" size="1" name="pole3" maxlength="3">
+    </br>
+    </br>
+    <button onclick="przepisz();return false;">Konwertuj</button>
+    <!--<button onclick="cofnij();return false;">Cofnij</button>*/-->
+  </form>
+
+</body>
+
+</html>

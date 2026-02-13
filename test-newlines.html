@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <title>Test Filtratora - Newlines</title>
+  <meta charset="utf-8">
+  <style>
+    body { 
+      font-family: Arial, sans-serif; 
+      max-width: 800px; 
+      margin: 50px auto; 
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .test-case {
+      background: white;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h2 { color: #333; }
+    textarea { 
+      width: 100%; 
+      padding: 10px; 
+      font-family: monospace;
+      border: 2px solid #ddd;
+      border-radius: 4px;
+      margin: 10px 0;
+    }
+    button {
+      background: #5ea4f3;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover { background: #4a8dd9; }
+    .result {
+      background: #e8f5e9;
+      padding: 15px;
+      border-radius: 4px;
+      margin-top: 10px;
+      font-family: monospace;
+      white-space: pre-wrap;
+    }
+    .expected {
+      background: #fff3cd;
+      padding: 10px;
+      border-radius: 4px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧪 Test Filtratora - Obsługa Enterów</h1>
+  
+  <div class="test-case">
+    <h2>Test 1: Liczby z enterami</h2>
+    <textarea id="test1" rows="5">1
+2
+3
+4</textarea>
+    <p><strong>Filtr:</strong> <code>0-9</code> | <strong>Separator:</strong> <code>|</code></p>
+    <button onclick="runTest1()">Testuj</button>
+    <div class="expected">Oczekiwany wynik: <code>1|2|3|4</code></div>
+    <div id="result1" class="result" style="display:none;"></div>
+  </div>
+
+  <div class="test-case">
+    <h2>Test 2: Słowa z enterami i znakami specjalnymi</h2>
+    <textarea id="test2" rows="5">Hello!!!
+World???
+Test...
+Hello...</textarea>
+    <p><strong>Filtr:</strong> <code>a-zA-Z</code> | <strong>Separator:</strong> <code>|</code></p>
+    <button onclick="runTest2()">Testuj</button>
+    <div class="expected">Oczekiwany wynik: <code>Hello|World|Test</code> (duplikaty usunięte)</div>
+    <div id="result2" class="result" style="display:none;"></div>
+  </div>
+
+  <div class="test-case">
+    <h2>Test 3: Mieszany tekst</h2>
+    <textarea id="test3" rows="6">apple123!!!
+banana456???
+apple123!!!
+cherry789</textarea>
+    <p><strong>Filtr:</strong> <code>a-zA-Z0-9</code> | <strong>Separator:</strong> <code>|</code></p>
+    <button onclick="runTest3()">Testuj</button>
+    <div class="expected">Oczekiwany wynik: <code>apple123|banana456|cherry789</code></div>
+    <div id="result3" class="result" style="display:none;"></div>
+  </div>
+
+  <script>
+    // Skopiowana funkcja filterText z main.js
+    function filterText(textIn, keepText, divider) {
+      // STEP 1: Replace newlines with divider FIRST
+      let processed = textIn.replace(/\r?\n/g, divider);
+      
+      // STEP 2: Escape special regex characters in keepText
+      const escapedKeepText = escapeRegexChars(keepText);
+      
+      // STEP 3: Create regex pattern for filtering
+      let filterPattern = new RegExp(`[^${escapedKeepText}]+`, 'gmu');
+
+      // STEP 4: Replace unwanted characters with divider
+      let filtered = processed.trim().replace(filterPattern, divider);
+
+      // STEP 5: Remove duplicate delimiters
+      const escapedDivider = escapeRegex(divider);
+      const duplicateDividerPattern = new RegExp(`${escapedDivider}{2,}`, 'g');
+      filtered = filtered.replace(duplicateDividerPattern, divider);
+      
+      // STEP 6: Remove leading/trailing dividers
+      const leadingTrailingPattern = new RegExp(`^${escapedDivider}+|${escapedDivider}+$`, 'g');
+      filtered = filtered.replace(leadingTrailingPattern, '');
+
+      // STEP 7: Split, remove duplicates, and rejoin
+      const parts = filtered.split(divider);
+      const unique = [...new Set(parts)].filter(Boolean);
+
+      return unique.join(divider);
+    }
+
+    function escapeRegexChars(str) {
+      // DO NOT escape hyphen (-) - it's used for ranges like a-z
+      return str
+        .replace(/\\/g, '\\\\')
+        .replace(/\]/g, '\\]')
+        .replace(/\^/g, '\\^');
+    }
+
+    function escapeRegex(str) {
+      return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    function runTest1() {
+      const input = document.getElementById('test1').value;
+      const result = filterText(input, '0-9', '|');
+      const resultDiv = document.getElementById('result1');
+      resultDiv.textContent = 'Wynik: ' + result;
+      resultDiv.style.display = 'block';
+      
+      if (result === '1|2|3|4') {
+        resultDiv.style.background = '#d4edda';
+        resultDiv.textContent += ' ✅ POPRAWNE!';
+      } else {
+        resultDiv.style.background = '#f8d7da';
+        resultDiv.textContent += ' ❌ BŁĄD!';
+      }
+    }
+
+    function runTest2() {
+      const input = document.getElementById('test2').value;
+      const result = filterText(input, 'a-zA-Z', '|');
+      const resultDiv = document.getElementById('result2');
+      resultDiv.textContent = 'Wynik: ' + result;
+      resultDiv.style.display = 'block';
+      
+      if (result === 'Hello|World|Test') {
+        resultDiv.style.background = '#d4edda';
+        resultDiv.textContent += ' ✅ POPRAWNE!';
+      } else {
+        resultDiv.style.background = '#f8d7da';
+        resultDiv.textContent += ' ❌ BŁĄD!';
+      }
+    }
+
+    function runTest3() {
+      const input = document.getElementById('test3').value;
+      const result = filterText(input, 'a-zA-Z0-9', '|');
+      const resultDiv = document.getElementById('result3');
+      resultDiv.textContent = 'Wynik: ' + result;
+      resultDiv.style.display = 'block';
+      
+      if (result === 'apple123|banana456|cherry789') {
+        resultDiv.style.background = '#d4edda';
+        resultDiv.textContent += ' ✅ POPRAWNE!';
+      } else {
+        resultDiv.style.background = '#f8d7da';
+        resultDiv.textContent += ' ❌ BŁĄD!';
+      }
+    }
+  </script>
+</body>
+</html>

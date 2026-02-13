@@ -1,6 +1,6 @@
 /**
  * Filtrator - Text filtering application
- * Improved version with error handling, validation, and better UX
+ * Simplified version - executes immediately
  */
 
 (function() {

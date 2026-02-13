@@ -1,8 +1,10 @@
 <!DOCTYPE html>
+<html lang="pl">
 <head>
-  <title>Filtrator</title>
+  <title>Filtrator - Narzędzie do filtrowania tekstu</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Aplikacja do filtrowania i separowania tekstu">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
   <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
   <link rel="stylesheet" href="main.css">
@@ -11,26 +13,101 @@
   <main class="page filtrator">
     <section class="filtrator-form">
       <div class="container">
-        <form id="form1" name="form1">
+        <form id="form1" name="form1" aria-label="Formularz filtrowania tekstu">
           <div class="filtrator-app">
-           <!-- <h3 class="title">Filtrator</h3>-->
             <div class="row">
               <div class="form-group col-sm-12">
-                <textarea id="textIn" name="textIn" type="text" class="form-control" rows="12" placeholder="Tutaj wklej tekst"></textarea>
+                <label for="textIn">Tekst wejściowy</label>
+                <textarea 
+                  id="textIn" 
+                  name="textIn" 
+                  class="form-control" 
+                  rows="12" 
+                  placeholder="Wklej tutaj tekst do przefiltrowania..."
+                  aria-describedby="textInHelp"
+                ></textarea>
+                <small id="textInHelp" class="form-text text-muted">
+                  Wprowadź tekst, który chcesz przefiltrować
+                </small>
               </div>
+              
               <div class="form-group col-sm-12">
-                <textarea id="textOut" name="textOut" type="text" class="form-control" rows="12"></textarea>
+                <label for="textOut">Wynik</label>
+                <textarea 
+                  id="textOut" 
+                  name="textOut" 
+                  class="form-control" 
+                  rows="12" 
+                  readonly
+                  aria-live="polite"
+                  placeholder="Tutaj pojawi się przefiltrowany tekst..."
+                ></textarea>
               </div>
-               <div class="form-group col-sm-9">
-                <label for="card-number">Filtr</label>
-                <input id="keepText" name="keepText" type="text" class="form-control" value="a-zA-Z0-9ąćęłńóśźżĄĆĘŁŃÓŚŹŻ/">
+              
+              <div class="form-group col-sm-9">
+                <label for="keepText">
+                  Filtr (znaki do zachowania)
+                  <span class="info-icon" title="Wprowadź znaki, które mają zostać zachowane. Można używać zakresów, np. a-z">ⓘ</span>
+                </label>
+                <input 
+                  id="keepText" 
+                  name="keepText" 
+                  type="text" 
+                  class="form-control" 
+                  value="a-zA-Z0-9ąćęłńóśźżĄĆĘŁŃÓŚŹŻ/"
+                  aria-describedby="keepTextHelp"
+                >
+                <small id="keepTextHelp" class="form-text text-muted">
+                  Znaki spoza tego zakresu zostaną zastąpione separatorem
+                </small>
               </div>
+              
               <div class="form-group col-sm-3">
-                <label for="card-number">Separator</label>
-                <input id="divider" name="divider" type="text" class="form-control" value="|">
+                <label for="divider">Separator</label>
+                <input 
+                  id="divider" 
+                  name="divider" 
+                  type="text" 
+                  class="form-control" 
+                  value="|"
+                  maxlength="5"
+                  aria-describedby="dividerHelp"
+                >
+                <small id="dividerHelp" class="form-text text-muted">
+                  Znak rozdzielający
+                </small>
               </div>
+              
               <div class="form-group col-sm-12">
-                <button onclick="convert()" type="button" class="btn btn-primary btn-block">Konwertuj</button>
+                <div class="button-group">
+                  <button 
+                    id="convertBtn" 
+                    type="button" 
+                    class="btn btn-primary btn-block"
+                  >
+                    Konwertuj
+                  </button>
+                  <button 
+                    id="clearBtn" 
+                    type="button" 
+                    class="btn btn-secondary btn-block"
+                  >
+                    Wyczyść
+                  </button>
+                  <button 
+                    id="copyBtn" 
+                    type="button" 
+                    class="btn btn-success btn-block"
+                    disabled
+                  >
+                    Kopiuj wynik
+                  </button>
+                </div>
+              </div>
+              
+              <!-- Alert dla komunikatów -->
+              <div class="col-sm-12">
+                <div id="alertBox" class="alert" role="alert" style="display: none;"></div>
               </div>
             </div>
           </div>
@@ -38,8 +115,8 @@
       </div>
     </section>
   </main>
+  
+  <script src="main.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 </body>
-<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-<script src="main.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 </html>
